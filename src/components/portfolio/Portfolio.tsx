@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Activity,
   ArrowUpRight,
   Boxes,
   Brain,
+  Code2,
   Database,
   Github,
   Linkedin,
   Mail,
   Menu,
   Server,
+  Swords,
   Target,
   Terminal,
   Trophy,
@@ -183,7 +186,10 @@ function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark");
+    const saved = localStorage.getItem("portfolio-theme");
+    const isDark =
+      saved === "dark" ||
+      (!saved && document.documentElement.classList.contains("dark"));
     setTheme(isDark ? "dark" : "light");
   }, []);
 
@@ -191,9 +197,11 @@ function ThemeToggle() {
     const isDark = document.documentElement.classList.contains("dark");
     if (isDark) {
       document.documentElement.classList.remove("dark");
+      localStorage.setItem("portfolio-theme", "light");
       setTheme("light");
     } else {
       document.documentElement.classList.add("dark");
+      localStorage.setItem("portfolio-theme", "dark");
       setTheme("dark");
     }
   };
@@ -224,6 +232,15 @@ function Nav() {
       }}
     >
       <div className="mx-auto flex max-w-5xl items-center gap-4 px-5 py-3 md:px-8">
+        <Link
+          to="/"
+          style={{ ...mono, color: C.muted, fontSize: 12 }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = C.accent)}
+          onMouseLeave={(e) => (e.currentTarget.style.color = C.muted)}
+          aria-label="Back to home"
+        >
+          ← home
+        </Link>
         <a href="#top" className="flex items-center gap-2 min-w-0">
           <Terminal size={16} color={C.accent} />
           <span style={{ ...mono, color: C.text, fontSize: 13, fontWeight: 600 }}>
@@ -335,23 +352,28 @@ function About() {
       <TerminalPanel prompt="~/about $ cat about.md">
         <div style={{ ...body, color: C.text, fontSize: 15, lineHeight: 1.75 }}>
           <p>
-            I'm a first-year B.Tech student at IIIT Nagpur, majoring in Data Science &
-            Analytics — but most of what I build lives at the intersection of{" "}
-            <span style={{ color: C.accent }}>backend engineering</span> and{" "}
-            <span style={{ color: C.accent }}>agentic AI</span>.
+            I'm a B.Tech CS student at IIIT Nagpur (Data Science &amp; Analytics, 2024–2028), and most of
+            what I build lives inside{" "}
+            <span style={{ color: C.accent }}>AI systems</span> — training and evaluating models, and
+            increasingly, orchestrating{" "}
+            <span style={{ color: C.accent }}>multi-agent pipelines</span> that plan and execute their
+            own work.
           </p>
           <p className="mt-4">
-            My current focus is an enterprise agentic data analyst — a system where multiple
-            LLM agents plan, write, and execute analysis code inside sandboxed containers,
-            with a human able to step in mid-run. Outside of that, I've shipped a production
-            backend used by <span style={{ color: C.warm }}>thousands of students</span>, run
-            club infrastructure, and designed cryptography challenges for a 500-participant
-            CTF.
+            My current focus is an enterprise agentic data analyst: upload a dataset, ask a question in
+            plain English, and a Gemini-driven planner hands off to a local{" "}
+            <span style={{ color: C.warm }}>Qwen2.5-Coder</span> worker that writes and runs the analysis
+            inside an isolated, memory-capped sandbox — auto-retrying from its own errors. Alongside that
+            I've built a distributed ML task scheduler (LCACS) that cuts makespan{" "}
+            <span style={{ color: C.warm }}>49.4% below the HEFT baseline</span>, and a self-serve
+            inference platform (ModelDeploy) serving PyTorch and scikit-learn models behind a JWT-gated
+            API.
           </p>
           <p className="mt-4">
-            I care about systems that are correct, observable, and don't fall over — whether
-            that's a distributed task scheduler or a multi-agent pipeline with a human in the
-            loop.
+            Infra and DevOps run underneath all of it, not apart from it — as Server Head at CRISPR Tech
+            Club I run monitoring and CI/CD for a{" "}
+            <span style={{ color: C.warm }}>2,000+ user platform</span>, which is usually what keeps AI
+            systems like these actually shippable instead of staying research code.
           </p>
         </div>
       </TerminalPanel>
@@ -366,37 +388,31 @@ function About() {
 const STACK: { icon: LucideIcon; name: string; items: string[] }[] = [
   {
     icon: Brain,
-    name: "agentic / ai",
+    name: "AI / agentic systems",
     items: [
-      "LangGraph",
-      "LangChain",
-      "Multi-agent orchestration",
-      "RAG",
-      "Langfuse",
-      "RAGAS",
-      "MCP tool-calling",
-      "Prompt engineering",
+      "PyTorch", "TensorFlow", "Keras", "Scikit-learn",
+      "HuggingFace Transformers", "LangChain", "LangGraph", "RAG",
+      "Pinecone (vector DB)", "Prompt engineering", "Multi-agent systems",
+      "OpenCV", "YOLOv4", "DINOv2", "SegFormer", "DeepLabV3",
     ],
   },
   {
     icon: Server,
-    name: "backend",
-    items: ["Node.js", "Django Ninja", "Strapi", "Celery", "REST APIs"],
+    name: "backend & data",
+    items: [
+      "Django (DRF)", "FastAPI", "Flask", "Node.js", "Express.js", "Strapi",
+      "PostgreSQL", "MySQL", "MongoDB", "Redis",
+    ],
   },
   {
     icon: Boxes,
     name: "devops / infra",
-    items: ["Docker", "Redis", "Prometheus", "Grafana", "CI/CD", "Linux"],
+    items: ["Docker", "Nginx", "Prometheus", "Grafana", "Coolify", "CI/CD", "Linux"],
   },
   {
-    icon: Database,
-    name: "data / ml",
-    items: [
-      "Python",
-      "PyTorch",
-      "Distributed scheduling",
-      "CNN / ViT architectures",
-    ],
+    icon: Code2,
+    name: "languages & core",
+    items: ["Python", "C/C++", "Java", "JavaScript", "SQL"],
   },
 ];
 
@@ -1081,7 +1097,7 @@ function Hero() {
       }}
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 pt-24 pb-6 md:px-8 md:pt-28 md:pb-8">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <StatusDot pulse />
             <span
@@ -1093,7 +1109,7 @@ function Hero() {
                 letterSpacing: "0.1em",
               }}
             >
-              live topology · shri.dev
+              AI SYSTEMS ENGINEER · SHRI.DEV
             </span>
           </div>
           <h1
@@ -1110,8 +1126,68 @@ function Hero() {
             Shrihari Telang
           </h1>
           <p style={{ ...mono, color: C.accent, fontSize: 14, fontWeight: 500 }}>
-            backend + devops engineer · building agentic ai systems
+            AI / AI systems engineer — devops &amp; infra on the side
           </p>
+
+          {/* Social icon row */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {[
+              { icon: Github,   href: "https://github.com/SSHRIHARI006",                    label: "GitHub" },
+              { icon: Linkedin, href: "https://linkedin.com/in/shriharitelang06",            label: "LinkedIn" },
+              { icon: Code2,    href: "https://leetcode.com/u/Shrihari06",                   label: "LeetCode" },
+              { icon: Swords,   href: "https://codeforces.com/profile/shriharitelang06",     label: "Codeforces" },
+              { icon: Mail,     href: "mailto:shriharitelang06@gmail.com",                   label: "Email" },
+            ].map(({ icon: Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={label}
+                style={{
+                  width: 32,
+                  height: 32,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 6,
+                  border: `1px solid ${C.border}`,
+                  color: C.muted,
+                  transition: "color 150ms ease, border-color 150ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = C.accent;
+                  e.currentTarget.style.borderColor = C.accent;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = C.muted;
+                  e.currentTarget.style.borderColor = C.border;
+                }}
+              >
+                <Icon size={14} />
+              </a>
+            ))}
+          </div>
+
+          {/* Fact badges */}
+          <div className="flex flex-wrap gap-2">
+            {["IIIT Nagpur '28", "CGPA 8.56", "2,000+ users shipped", "LeetCode Knight"].map((badge) => (
+              <span
+                key={badge}
+                style={{
+                  ...mono,
+                  fontSize: 11,
+                  color: C.muted,
+                  border: `1px solid ${C.border}`,
+                  borderRadius: 4,
+                  padding: "3px 8px",
+                  backgroundColor: C.panelAlt,
+                }}
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_340px]">
@@ -1179,7 +1255,7 @@ function Hero() {
             <NodeInspector node={shownNode} />
             <div className="flex flex-wrap gap-3">
               <a
-                href="#about"
+                href="#projects-section"
                 style={{
                   ...mono,
                   fontSize: 13,
@@ -1194,7 +1270,7 @@ function Hero() {
                   minHeight: 44,
                 }}
               >
-                explore the graph <ArrowUpRight size={14} />
+                view projects <ArrowUpRight size={14} />
               </a>
               <a
                 href="#contact"
@@ -1270,6 +1346,157 @@ function InProgressSwatch() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Projects (card grid)                                                      */
+/* -------------------------------------------------------------------------- */
+
+interface ProjectCard {
+  title: string;
+  hook: string;
+  bullets: string[];
+  metric?: string;
+  tags: string[];
+  badge?: string;
+}
+
+const PROJECT_CARDS: ProjectCard[] = [
+  {
+    title: "LCACS — Distributed ML Task Scheduler",
+    hook: "Decides which node runs which task in a distributed ML training job — not just dependency order, but compute cost, network contention, and load balance too.",
+    bullets: [
+      "Models the training job as a DAG, resolves execution order via topological sort in O(T·W + T + E)",
+      "Benchmarked in simulation against the classical HEFT scheduler",
+      "93–99% cluster utilization across test workloads",
+    ],
+    metric: "49.4% lower makespan vs. HEFT",
+    tags: ["Distributed systems", "DAG scheduling", "Simulation"],
+    badge: "in development",
+  },
+  {
+    title: "Enterprise Agentic Data Analyst Engine",
+    hook: "Upload a dataset, ask a question in plain English — an AI agent writes and runs the analysis code for you, inside a sandbox.",
+    bullets: [
+      "Gemini plans the steps, a local Qwen2.5-Coder model writes the code — usable on 8GB RAM / CPU-only hardware",
+      "Thread-safe, network-isolated, 512MB memory-capped Docker sandbox; failed runs feed traceback back to self-correct",
+      "Caches successful runs by hash of task + dataset schema; multi-key API rotation with 429 failover",
+    ],
+    tags: ["Agent orchestration", "Gemini", "Qwen2.5-Coder", "Docker sandboxing"],
+  },
+  {
+    title: "ModelDeploy — ML Inference Platform",
+    hook: "Upload a trained model, get an API key, call it over REST — hosted inference without building infra per model.",
+    bullets: [
+      "FastAPI worker pool spins up isolated per-model environments in seconds (no Docker image per model)",
+      "Framework-agnostic RunnerFactory serves scikit-learn and PyTorch models through privilege-dropped subprocesses",
+      "JWT + API-key gateway, Redis-backed rate limiting",
+    ],
+    metric: "~2ms routing/inference latency",
+    tags: ["Django", "FastAPI", "Redis", "Docker"],
+    badge: "in development",
+  },
+  {
+    title: "Semantic Scene Segmentation — Off-Road Navigation",
+    hook: "Compares how a CNN and a transformer 'see' terrain, then combines them for real-time off-road path planning.",
+    bullets: [
+      "Benchmarked DeepLabV3 (CNN) vs. DINOv2 (ViT) plus a custom decoder across 8,000 terrain images",
+      "Integrated A* pathfinding on the predicted obstacle grid",
+      "Sub-100ms inference latency",
+    ],
+    metric: "56% mIoU across 10 classes",
+    tags: ["PyTorch", "OpenCV", "Streamlit", "Computer vision"],
+  },
+  {
+    title: "Plastic Waste Detector",
+    hook: "Real-time detection and classification of plastic waste for automated sorting.",
+    bullets: [
+      "Fine-tuned YOLOv4 via transfer learning; classifies 6 plastic types",
+      "70%+ accuracy on 50×50px objects",
+    ],
+    metric: "2nd place among 150+ teams — national hackathon",
+    tags: ["YOLOv4", "TensorFlow", "OpenCV"],
+  },
+];
+
+function ProjectsSection() {
+  return (
+    <div id="projects-section" className="flex flex-col gap-6">
+      <SectionLabel id="projects-section-label" name="projects" />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {PROJECT_CARDS.map((p) => (
+          <div
+            key={p.title}
+            style={{
+              backgroundColor: C.panel,
+              border: `1px solid ${C.border}`,
+              borderRadius: 8,
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              boxShadow: "var(--portfolio-card-shadow)",
+            }}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <h3 style={{ ...mono, color: C.text, fontSize: 13, fontWeight: 700, lineHeight: 1.4 }}>
+                {p.title}
+              </h3>
+              {p.badge && (
+                <span
+                  style={{
+                    ...mono,
+                    fontSize: 10,
+                    color: C.warm,
+                    border: `1px solid ${C.warm}`,
+                    borderRadius: 4,
+                    padding: "2px 6px",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    opacity: 0.85,
+                  }}
+                >
+                  {p.badge}
+                </span>
+              )}
+            </div>
+            <p style={{ ...body, color: C.muted, fontSize: 13, lineHeight: 1.6 }}>{p.hook}</p>
+            <ul className="flex flex-col gap-1.5">
+              {p.bullets.map((b) => (
+                <li key={b} className="flex items-start gap-2">
+                  <StatusDot color={C.accent} size={5} />
+                  <span style={{ ...body, color: C.text, fontSize: 12.5, lineHeight: 1.55 }}>{b}</span>
+                </li>
+              ))}
+            </ul>
+            {p.metric && (
+              <div
+                style={{
+                  backgroundColor: C.panelAlt,
+                  border: `1px solid ${C.border}`,
+                  borderRadius: 6,
+                  padding: "8px 12px",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <span style={{ ...mono, color: C.warm, fontSize: 13, fontWeight: 700 }}>
+                  {p.metric}
+                </span>
+              </div>
+            )}
+            <ul className="flex flex-wrap gap-1.5">
+              {p.tags.map((t) => (
+                <li key={t}>
+                  <Tag>{t}</Tag>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Log (experience)                                                          */
 /* -------------------------------------------------------------------------- */
 
@@ -1278,22 +1505,29 @@ const LOG = [
     hash: "a3f9c1",
     role: "Server Head",
     org: "CRISPR Tech Club",
-    when: "current",
-    body: "Own club infrastructure and designed CTF challenges for EnigmaXplore 3.0, covering RSA, AES, ECC, and isogeny-based cryptography for 500+ participants.",
+    when: "2025–Present",
+    body: "Migrated campus services to a self-hosted Coolify CI/CD platform on a newly provisioned VM, configuring virtual networking end-to-end. Built a Prometheus + Grafana monitoring stack maintaining 99% uptime for 2,000+ users. Designed a sandboxed Docker-based CTF for 100+ junior developers, each isolated via SSH-accessible containers testing secure tunneling and reverse-proxy configuration.",
   },
   {
     hash: "7d2e08",
     role: "Backend Developer",
     org: "Pravesh",
-    when: "current",
-    body: "Built the Node.js + Strapi backend for an entry/exit management system now live on the Play Store with 2,000+ active users and ₹1L+ in college funding.",
+    when: "2024–Present",
+    body: "Built and shipped the backend for an institution-wide entry/exit management system. Designed REST APIs (Node.js, Strapi) handling 1,000+ daily QR validations and real-time access logs for 2,000+ active users. Containerized the app with Nginx reverse proxies for zero-downtime production deploys. Live on the Play Store at pravesh.iiitn.ac.in.",
   },
   {
     hash: "1b6a44",
+    role: "CTF Challenge Designer",
+    org: "EnigmaXplore 3.0",
+    when: "2025",
+    body: "Designed cryptography challenges (RSA, AES, ECC, isogeny) for a global cybersecurity competition with 1,000+ participants across 30+ countries. Developed complex mathematical vulnerabilities requiring custom solver scripts, resulting in the event's lowest solve rates.",
+  },
+  {
+    hash: "e91f2a",
     role: "B.Tech CSE, Data Science & Analytics",
     org: "IIIT Nagpur",
     when: "2024–2028",
-    body: "CGPA 8.83/10, highest in batch first semester with multiple perfect-10 subject grades.",
+    body: "CGPA 8.56/10. Coursework: DSA, OOP, DBMS, OS, Computer Networks, Compiler Design, ML, DL.",
   },
 ];
 
@@ -1432,7 +1666,7 @@ function Stats() {
           icon={Target}
           label="leetcode"
           title="Knight"
-          detail="1850+ rating · 400+ solved"
+          detail="1850+ rating · 500+ solved"
         />
         <StatCard
           icon={Activity}
@@ -1456,29 +1690,40 @@ function Stats() {
 
 const ENV_ROWS: { k: string; v: string; accent?: boolean }[] = [
   { k: "NAME", v: '"Shrihari Telang"' },
-  { k: "LOCATION", v: '"Nagpur, Maharashtra, IN"' },
-  { k: "EDU", v: '"IIIT Nagpur, CSE-DSA \'28"' },
-  { k: "STATUS", v: '"open to AI/ML internships"', accent: true },
+  { k: "EDU",  v: '"IIIT Nagpur, CSE-DSA \'28"' },
+  { k: "STATUS", v: '"open to AI/ML, backend & infra internships"', accent: true },
 ];
 
 const LINKS: { icon: LucideIcon; label: string; value: string; href: string }[] = [
   {
     icon: Mail,
     label: "email",
-    value: "hello@shrihari.dev  // placeholder",
-    href: "mailto:hello@shrihari.dev",
+    value: "shriharitelang06@gmail.com",
+    href: "mailto:shriharitelang06@gmail.com",
   },
   {
     icon: Github,
     label: "github",
-    value: "github.com/shrihari  // placeholder",
-    href: "https://github.com/",
+    value: "github.com/SSHRIHARI006",
+    href: "https://github.com/SSHRIHARI006",
   },
   {
     icon: Linkedin,
     label: "linkedin",
-    value: "linkedin.com/in/shrihari  // placeholder",
-    href: "https://linkedin.com/",
+    value: "linkedin.com/in/shriharitelang06",
+    href: "https://linkedin.com/in/shriharitelang06",
+  },
+  {
+    icon: Code2,
+    label: "leetcode",
+    value: "leetcode.com/u/Shrihari06",
+    href: "https://leetcode.com/u/Shrihari06",
+  },
+  {
+    icon: Swords,
+    label: "codeforces",
+    value: "codeforces.com/profile/shriharitelang06",
+    href: "https://codeforces.com/profile/shriharitelang06",
   },
 ];
 
@@ -1601,6 +1846,7 @@ export default function Portfolio() {
         <div className="mt-20 flex flex-col gap-20 md:mt-24 md:gap-24">
           <About />
           <Stack />
+          <ProjectsSection />
           <Log />
           <Stats />
           <Contact />

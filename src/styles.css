@@ -45,9 +45,27 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shri-pulse, .shri-caret, .shri-line-in {
+  .shri-pulse, .shri-caret, .shri-line-in,
+  .solar-sun-pulse, .solar-sun-glow {
     animation: none !important;
   }
+}
+
+/* Solar system animations */
+@keyframes solar-sun-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%       { transform: translate(-50%, -50%) scale(1.03); }
+}
+@keyframes solar-sun-glow {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.25; }
+}
+
+.solar-sun-pulse {
+  animation: solar-sun-pulse 3s ease-in-out infinite;
+}
+.solar-sun-glow {
+  animation: solar-sun-glow 3s ease-in-out infinite;
 }
 
 /*
@@ -179,18 +197,19 @@
 }
 
 :root {
-  --portfolio-bg: #f7f4ec;
+  --portfolio-bg: #F7F4EC;
   --portfolio-nav-bg: rgba(247, 244, 236, 0.9);
-  --portfolio-panel: #ffffff;
-  --portfolio-panel-alt: #efead9;
-  --portfolio-border: #e3dcc9;
-  --portfolio-text: #171513;
-  --portfolio-muted: #4d453b;
-  --portfolio-accent: #c05a3c;
-  --portfolio-warm: #b54a24;
-  --portfolio-red: #b3261e;
-  --portfolio-live-bg: rgba(192, 90, 60, 0.12);
-  --portfolio-swatch-bg: rgba(192, 90, 60, 0.15);
+  --portfolio-panel: #FFFFFF;
+  --portfolio-panel-alt: #EFEAD9;
+  --portfolio-border: #E3DCC9;
+  --portfolio-text: #231E1A;
+  --portfolio-muted: #5E5248;
+  --portfolio-accent: #D97757;
+  --portfolio-warm: #B54A24;
+  --portfolio-red: #B3261E;
+  --portfolio-live-bg: rgba(217, 119, 87, 0.12);
+  --portfolio-swatch-bg: rgba(217, 119, 87, 0.15);
+  --portfolio-card-shadow: 0 4px 20px rgba(43, 38, 33, 0.06);
 }
 
 .dark {
@@ -200,12 +219,13 @@
   --portfolio-panel-alt: #161B22;
   --portfolio-border: #232A33;
   --portfolio-text: #D8DEE4;
-  --portfolio-muted: #6B7684;
+  --portfolio-muted: #5C6773;
   --portfolio-accent: #4FD1C5;
   --portfolio-warm: #F2A65A;
   --portfolio-red: #E06C75;
   --portfolio-live-bg: rgba(79, 209, 197, 0.12);
   --portfolio-swatch-bg: rgba(79, 209, 197, 0.15);
+  --portfolio-card-shadow: none;
 }
 
 @layer base {
@@ -222,4 +242,9 @@
 /* Hide Lovable badge */
 #lovable-badge {
   display: none !important;
+}
+
+/* Smooth theme cross-fade */
+body, #top {
+  transition: background-color 150ms ease, color 150ms ease;
 }

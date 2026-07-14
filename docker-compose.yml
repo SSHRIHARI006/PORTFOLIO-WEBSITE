@@ -1,0 +1,9 @@
+services:
+  portfolio:
+    image: sshrihari006/portfolio-website:latest
+    container_name: portfolio-website
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:80"
+    environment:
+      - NODE_ENV=production
